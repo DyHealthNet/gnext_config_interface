@@ -16,6 +16,8 @@ input_help <- function(input_ui, help_text) {
 # Leave a URL empty to show a clear placeholder in the About tab.
 gnext_pipeline_github <- "https://github.com/DyHealthNet/gnext_nf_pipeline"
 gnext_platform_github <- "https://github.com/DyHealthNet/gnext_platform/tree/main"
+gnext_pipeline_issues <- "https://github.com/DyHealthNet/gnext_nf_pipeline/issues"
+gnext_platform_issues <- "https://github.com/DyHealthNet/gnext_platform/issues"
 gnext_paper_url <- "https://doi.org/10.1038/s41588-026-02708-6"
 gnext_paper_citation <- "Arend, L., Woller, F., Rehor, B. et al. Bridging the gap between GWAS and network medicine with GNExT. Nat Genet (2026)."
 
@@ -29,23 +31,20 @@ about_resource <- function(label, url) {
 
 ui <-  dashboardPage(
   dashboardHeader(
-    title = "GNExT - GWAS Network Exploration Tool",
-    tags$li(
-      class = "dropdown gnext-header-logo",
-      tags$img(src = "gnext_logo.png", alt = "GNExT logo",
-               style = "display:block; width:142px; max-height:35px; object-fit:contain; padding:4px 9px; background:#fff; border-radius:4px;")
-    )
+    title = tags$img(src = "gnext_logo.png", alt = "GNExT - GWAS Network Exploration Tool",
+                     class = "gnext-header-logo")
   ),
+  title = "GNExT - GWAS Network Exploration Tool",
   
   dashboardSidebar(
     sidebarMenu(
       menuItem(
-        "GNExT nf pipeline",
+        "Nextflow pipeline",
         tabName = "preprocessing",
         icon = icon("gears")
       ),
       menuItem(
-        "GNExT platform",
+        "Platform",
         tabName = "platform",
         icon = icon("globe")
       ),
@@ -53,6 +52,16 @@ ui <-  dashboardPage(
         "About",
         tabName = "about",
         icon = icon("info-circle")
+      ),
+      menuItem(
+        "Citation",
+        tabName = "citation",
+        icon = icon("quote-right")
+      ),
+      menuItem(
+        "Issues",
+        tabName = "issues",
+        icon = icon("bug")
       )
     )
   ),
@@ -70,7 +79,11 @@ ui <-  dashboardPage(
       .skin-blue .sidebar-menu > li.active > a {
         border-left-color: #95AAD3 !important;
       }
-      .main-header .navbar-custom-menu .gnext-header-logo { padding: 7px 18px 0 0; }
+      .content-wrapper, .right-side { background-color: #fff !important; }
+      .main-header .logo .gnext-header-logo {
+        width: 142px; max-height: 35px; object-fit: contain;
+        vertical-align: middle;
+      }
     "))),
     tabItems(
       
@@ -597,21 +610,20 @@ ui <-  dashboardPage(
     tabItem(
       tabName = "about",
       div(
-        style = "max-width:960px; margin:0 auto; padding:20px 16px 42px;",
+        style = "max-width:960px; padding-bottom:42px;",
         div(
-          style = "text-align:center; margin:4px 0 26px;",
+          style = "text-align:left; margin:4px 0 26px;",
           tags$img(src = "gnext_logo.png", alt = "GNExT - GWAS Network Exploration Tool",
                    style = "width:480px; max-width:95%; height:auto;")
         ),
         h2("GNExT - GWAS Network Exploration Tool"),
-        p(tags$em("GWAS Network Exploration Tool")),
         p("A web-based platform that builds on PheWeb’s interactive, scalable, and decentralized deployment model while extending its functionalities beyond a variant-level effect and significance exploration towards a systems and network medicine toolbox."),
         p("By including MAGMA and DrugSt.One, GNExT allows its users to study genetic variants on the network level down to the identification of potential drug repurposing candidates. Our solution advances over the current state of the art platform PheWeb by offering a highly standardized Nextflow pipeline for data import and processing, allowing researchers to easily deploy their study results on a web interface."),
         p("For further information, see the ", about_resource("GNExT Platform README on GitHub", gnext_platform_github), "."),
         div(
-          style = "margin:22px 0 28px; text-align:center;",
+          style = "margin:22px 0 28px; text-align:left;",
           tags$img(src = "gnext_overview.png", alt = "GNExT overview: GWAS data, preprocessing pipeline, web platform and network medicine",
-                   style = "display:block; width:100%; max-width:100%; height:auto; border:1px solid #e5e8ed;"),
+                   style = "display:block; width:100%; max-width:100%; height:auto;"),
           tags$small(tags$em("Overview of the GNExT Tool"), style = "display:block; margin-top:8px; color:#666;")
         ),
         hr(),
@@ -621,9 +633,9 @@ ui <-  dashboardPage(
         p("Data preprocessing for a GNExT platform is performed through a Nextflow-based pipeline that enables seamless deployment across different computing environments and automatically ensures scalability for large collections of GWAS summary statistics."),
         p("Please refer to GitHub repository of the preprocessing pipeline for detailed explanation of all required parameters: ", about_resource("gnext_nf_pipeline", gnext_pipeline_github), "."),
         div(
-          style = "margin:18px 0 24px; text-align:center;",
+          style = "margin:18px 0 24px; text-align:left;",
           tags$img(src = "gnext_pipeline_overview.png", alt = "GNExT Nextflow Pipeline logo",
-                   style = "display:block; width:440px; max-width:85%; height:auto; margin:0 auto;"),
+                   style = "display:block; width:440px; max-width:85%; height:auto;"),
           tags$small(tags$em("Data Preprocessing Pipeline for GNExT Platform"), style = "display:block; margin-top:8px; color:#666;")
         ),
         tags$ol(
@@ -639,7 +651,7 @@ ui <-  dashboardPage(
                   "Specify the pipeline and job directories, Java home and Nextflow executable. Click 'Create config files', then 'Submit pipeline'.")
         ),
         h3("2. GNExT platform configuration"),
-        p("After preprocessing has completed, use the 'GNExT platform' section to prepare the study-specific deployment configuration."),
+        p("After preprocessing has completed, use the 'Platform' tab to prepare the study-specific deployment configuration."),
         hr(),
         h3("Documentation and source code"),
         p("For complete setup instructions, pipeline parameters, deployment requirements and troubleshooting, consult the GitHub documentation:"),
@@ -647,12 +659,36 @@ ui <-  dashboardPage(
           tags$li(about_resource("GNExT Platform - README and source code", gnext_platform_github)),
           tags$li(about_resource("GNExT Nextflow preprocessing pipeline - README and source code", gnext_pipeline_github))
         ),
-        h3("Citation"),
-        p(if (nzchar(trimws(gnext_paper_citation))) gnext_paper_citation else
-            "GNExT publication: add the verified paper citation (authors, title, journal, year and DOI) in the app configuration."),
-        p(about_resource("GNExT paper", gnext_paper_url)),
         tags$small("Please refer to the GitHub repositories for detailed documentation and deployment requirements.",
                    style = "color:#666;")
+      )
+    ),
+    tabItem(
+      tabName = "citation",
+      div(
+        style = "max-width:960px; padding-bottom:42px;",
+        h2("Citation"),
+        p("If you use GNExT in your research, please cite:"),
+        p(if (nzchar(trimws(gnext_paper_citation))) gnext_paper_citation else
+            "GNExT publication: add the verified paper citation (authors, title, journal, year and DOI) in the app configuration."),
+        p(about_resource("GNExT paper", gnext_paper_url))
+      )
+    ),
+    tabItem(
+      tabName = "issues",
+      div(
+        style = "max-width:960px; padding-bottom:42px;",
+        h2("Issues"),
+        p("If you run into trouble, find a bug or have a feature request, please check the existing issues or open a new one in the corresponding GitHub repository:"),
+        tags$ul(
+          tags$li(tags$b("Nextflow pipeline: "),
+                  "problems with preprocessing, pipeline parameters or job submission - ",
+                  about_resource("gnext_nf_pipeline issues", gnext_pipeline_issues)),
+          tags$li(tags$b("Platform: "),
+                  "problems with the platform configuration, deployment or web interface - ",
+                  about_resource("gnext_platform issues", gnext_platform_issues))
+        ),
+        p("When opening an issue, please describe what you did, what you expected to happen and include any error messages or log output.")
       )
     )
   )
