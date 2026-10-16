@@ -11,17 +11,13 @@ The application simplifies the configuration of GWAS preprocessing and platform 
 Download the Docker image:
 
 ```bash
-docker pull gnext_config_interface
+docker pull ghcr.io/dyhealthnet/gnext_config_interface:latest
 ```
 
 Start the Shiny application:
 
 ```bash
-docker run -d \
-  --name gnext-shiny \
-  -p 3838:3838 \
-  <required-volume-mounts> \
-  gnext_config_interface
+docker run --rm -p 3838:3838 ghcr.io/dyhealthnet/gnext_config_interface:latest
 ```
 
 **Note:** The Docker container must have access to the required input/output directories, the GNExT repositories, and the SLURM environment used to submit Nextflow jobs. Configure the appropriate volume mounts and permissions for your system.
