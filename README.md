@@ -6,7 +6,11 @@ The application simplifies the configuration of GWAS preprocessing and platform 
 
 ## Quick Start
 
-### 1. Pull and run the GNExT Shiny App
+Two installation options are available: **Docker** or **Conda**.
+
+### Option A: Docker
+
+#### 1. Pull and run the GNExT Shiny App
 
 Download the Docker image:
 
@@ -22,7 +26,7 @@ docker run --rm -p 3838:3838 ghcr.io/dyhealthnet/gnext_config_interface:latest
 
 **Note:** The Docker container must have access to the required input/output directories, the GNExT repositories, and the SLURM environment used to submit Nextflow jobs. Configure the appropriate volume mounts and permissions for your system.
 
-### 2. Access the Shiny App via SSH port forwarding
+#### 2. Access the Shiny App via SSH port forwarding
 
 If the application is running on a remote server or HPC cluster, create an SSH tunnel from your local computer:
 
@@ -36,7 +40,56 @@ Then open the following address in your browser:
 
 Keep the SSH connection active while using the application.
 
-### 3. Configure the GNExT Nextflow pipeline
+### Option B: Conda
+
+#### 1. Create the conda environment
+
+Clone the repository and create the environment:
+
+```bash
+git clone https://github.com/DyHealthNet/gnext_config_interface
+cd gnext_config_interface
+conda env create -f environment.yml
+```
+
+Tip: use `mamba` instead of `conda` for faster installation:
+
+```bash
+mamba env create -f environment.yml
+```
+
+#### 2. Configure the SLURM parameters in run.sh
+
+Open `run.sh` and edit the SLURM directives to match your cluster:
+
+```bash
+#SBATCH --partition=YOUR_PARTITION
+#SBATCH --nodelist=YOUR_NODE
+```
+
+Replace `YOUR_PARTITION` and `YOUR_NODE` with the partition and node available on your system.
+
+#### 3. Submit the app as a SLURM job
+
+```bash
+sbatch run.sh
+```
+
+#### 4. Access the Shiny App via SSH port forwarding
+
+Once the app is running, open an SSH tunnel from your local computer to the cluster node:
+
+```bash
+ssh -N -L 3838:localhost:3838 username@server
+```
+
+Then open the following address in your browser:
+
+**http://localhost:3838**
+
+Keep the SSH connection active while using the application.
+
+### Configure the GNExT Nextflow pipeline
 
 In the **GNExT nf pipeline** tab:
 
@@ -48,19 +101,18 @@ In the **GNExT nf pipeline** tab:
 
 The preprocessing workflow is submitted to SLURM and generates the files required by the GNExT web platform.
 
-### 4. Configure and launch the GNExT platform
+### Configure and launch the GNExT platform
 
 After successful completion of the preprocessing pipeline:
 
 1. Open the **GNExT platform** tab.
 2. Specify the GNExT platform repository and deployment directories.
 3. Configure the platform environment variables.
-4. Point the platform to the generated phenotype metadata and Nextflow results (JOB_DIR/nf_output/).
+4. Point the platform to the generated phenotype metadata and Nextflow results (`JOB_DIR/nf_output/`).
 5. Generate the `.env` file and Docker launch script.
 6. Execute the generated launch script to start the GNExT web platform.
 
-
-### 5. Access the GNExT web platform
+### Access the GNExT web platform
 
 If the frontend is running on a remote server, create an SSH tunnel to the frontend port:
 
@@ -76,11 +128,19 @@ Then open:
 
 ## Requirements
 
+**Docker option:**
+
 - Docker and Docker Compose
 - Access to a SLURM-enabled computational environment
 - Nextflow and Java available in the execution environment
 - GNExT Nextflow pipeline and GNExT platform repositories
-- Appropriate filesystem permissions and access to GWAS input data
+
+**Conda option:**
+
+- Conda or Mamba
+- Access to a SLURM-enabled computational environment
+- Nextflow and Java available in the execution environment
+- GNExT Nextflow pipeline and GNExT platform repositories
 
 ## Documentation
 
@@ -88,4 +148,3 @@ For additional information, see:
 
 - [GNExT Nextflow Pipeline](https://github.com/DyHealthNet/gnext_nf_pipeline)
 - [GNExT Web Platform](https://github.com/DyHealthNet/gnext_platform)
-
